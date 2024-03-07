@@ -6,13 +6,13 @@ class QueueConfig
 {
     protected string $queue = 'default';
 
-    protected int $retry_after = 90; // seconds
+    protected int $retry_after = 90;
 
     protected string $table = 'queues';
 
-    protected QueueInterface $driver;
+    protected QueueInterface|null $driver = null;
 
-    public function __construct(array $options = [])
+    public function __construct(array|null $options = null)
     {
         if ($options) {
             foreach ($options as $key => $value) {

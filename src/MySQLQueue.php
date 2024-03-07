@@ -5,25 +5,26 @@ namespace Moharram82\Queue;
 use Moharram82\Queue\Exceptions\DatabaseConnectionException;
 use PDO;
 use PDOException;
+use stdClass;
 
 class MySQLQueue extends Queue implements QueueInterface
 {
-    protected PDO $connection;
-
     protected string $table = 'queues';
 
     protected string $queue = 'default';
 
-    public function __construct(PDO $connection = null, array $connection_options = [], QueueConfig $config = null)
-    {
+    public function __construct(
+        protected PDO|null $connection = null,
+        array|null $connection_options = null,
+        QueueConfig|null $config = null
+    ) {
         if ($config) {
             $this->table = $config->getTable();
             $this->queue = $config->getQueue();
         }
 
-        if ($connection) {
-            $this->connection = $connection;
-        } elseif (!empty($connection_options['host'])
+        if (!$this->connection
+            && !empty($connection_options['host'])
             && !empty($connection_options['username'])
             && !empty($connection_options['password'])
             && !empty($connection_options['database'])
@@ -49,8 +50,10 @@ class MySQLQueue extends Queue implements QueueInterface
             } catch (PDOException $e) {
                 throw new DatabaseConnectionException($e->getMessage());
             }
-        } else {
-            throw new DatabaseConnectionException('Missing database driver or connection parameters');
+        }
+
+        if (!$this->connection) {
+            throw new DatabaseConnectionException('Cannot establish database connection!');
         }
     }
 
@@ -62,14 +65,14 @@ class MySQLQueue extends Queue implements QueueInterface
         return $stmnt->fetchAll()[0]['count'];
     }
 
-    public function push($job, string $queue = 'default'): void
+    public function push(object $job, string $queue = 'default'): void
     {
         $payload = $this->preparePayload($job);
 
         $this->pushToDatabase($payload, $queue);
     }
 
-    public function pop(string $queue = 'default')
+    public function pop(string $queue = 'default'): MySQLJob|null
     {
         $this->connection->beginTransaction();
 
@@ -84,7 +87,7 @@ class MySQLQueue extends Queue implements QueueInterface
         return $job;
     }
 
-    protected function getNextJob(string $queue = 'default')
+    protected function getNextJob(string $queue = 'default'): array|null
     {
         $now = time();
 
@@ -116,7 +119,7 @@ class MySQLQueue extends Queue implements QueueInterface
         return $this->pushToDatabase($job['data'], $queue, $delay, $job['tries']);
     }
 
-    protected function pushToDatabase($payload, $queue = 'default', $delay = 0, $tries = 0): int
+    protected function pushToDatabase(string $payload, $queue = 'default', $delay = 0, $tries = 0): int
     {
         $now = time();
 
@@ -136,7 +139,7 @@ class MySQLQueue extends Queue implements QueueInterface
         return $this->connection->lastInsertId();
     }
 
-    public function deleteReserved($queue, $id)
+    public function deleteReserved($queue, $id): void
     {
         $this->connection->beginTransaction();
 
@@ -151,7 +154,7 @@ class MySQLQueue extends Queue implements QueueInterface
         $this->connection->commit();
     }
 
-    public function deleteAndRelease($queue, $job, $delay)
+    public function deleteAndRelease($queue, $job, $delay):void
     {
         $this->connection->beginTransaction();
 

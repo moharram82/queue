@@ -8,5 +8,5 @@ interface QueueInterface
 
     public function push(object $job, string $queue = 'default'): void;
 
-    public function pop(string $queue = 'default');
+    public function pop(string $queue = 'default'): MySQLJob|null;
 }

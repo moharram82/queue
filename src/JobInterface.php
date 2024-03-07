@@ -2,13 +2,15 @@
 
 namespace Moharram82\Queue;
 
+use stdClass;
+
 interface JobInterface
 {
     public function getJobId(): int;
 
-    public function getRawBody(): string;
+    public function getRawBody(): string|null;
 
-    public function payload();
+    public function payload(): stdClass|null;
 
     public function fire(): void;
 

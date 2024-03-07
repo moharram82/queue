@@ -18,14 +18,14 @@ abstract class Job
 
     abstract public function getJobId(): int;
 
-    abstract public function getRawBody(): string;
+    abstract public function getRawBody(): string|null;
 
     public function getQueue(): string
     {
         return $this->queue;
     }
 
-    public function payload()
+    public function payload(): stdClass|null
     {
         $raw_body = $this->getRawBody();
 

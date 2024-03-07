@@ -30,6 +30,6 @@ try {
 }
 
 $config = new \Moharram82\Queue\QueueConfig();
-$config->setDriver(new \Moharram82\Queue\MySQLQueue($connection, [], $config));
+$config->setDriver(new \Moharram82\Queue\MySQLQueue($connection, null, $config));
 
 $manager = new \Moharram82\Queue\QueueManager($config);

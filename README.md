@@ -4,7 +4,7 @@
 This is a PHP Queue package for executing time-consuming tasks in the background.
 
 ## Requirements
-- PHP 7.4+
+- PHP 8.1+
 - MySQL 5.6+ (for database driver)
 
 ## Installation & Configuration
@@ -12,6 +12,7 @@ This is a PHP Queue package for executing time-consuming tasks in the background
 ```composer
 composer require moharram82/php-queue
 ```
+- Create the queues table by executing `table.sql` file
 - Instantiate a new `\Moharram82\Queue\QueueConfig` instance, which accepts an optional configuration array.
 ```php
 $config = new \Moharram82\Queue\QueueConfig([

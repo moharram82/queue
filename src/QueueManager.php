@@ -6,15 +6,11 @@ use Moharram82\Queue\Exceptions\MissingQueueDriverException;
 
 class QueueManager
 {
-    protected QueueConfig $config;
-
-    protected QueueInterface $driver;
-
-    public function __construct(QueueConfig $config)
-    {
-        $this->config = $config;
-
-        if (empty($this->config->getDriver())) {
+    public function __construct(
+        protected QueueConfig $config,
+        protected QueueInterface|null $driver = null
+    ) {
+        if (!$this->driver && empty($this->config->getDriver())) {
             throw new MissingQueueDriverException();
         }
 
@@ -25,9 +21,7 @@ class QueueManager
     {
         $job = $this->driver->pop($this->config->getQueue());
 
-        if ($job) {
-            $job->fire();
-        }
+        $job?->fire();
     }
 
     public function __call($method, $parameters)

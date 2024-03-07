@@ -6,7 +6,7 @@ use Moharram82\Queue\Exceptions\InvalidPayloadException;
 
 abstract class Queue
 {
-    protected function preparePayload(object $job)
+    protected function preparePayload(object $job): string
     {
         $payload_array = [
             'command' => serialize(clone $job),

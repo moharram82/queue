@@ -6,17 +6,11 @@ use PDO;
 
 class MySQLJob extends Job implements JobInterface
 {
-    protected QueueInterface $database;
-
-    protected array $job;
-
-    protected string $queue;
-
-    public function __construct(QueueInterface $database, array $job, string $queue = 'default')
-    {
-        $this->database = $database;
-        $this->job = $job;
-        $this->queue = $queue;
+    public function __construct(
+        protected QueueInterface $database,
+        protected array $job,
+        protected string $queue = 'default'
+    ) {
     }
 
     public function getJobId(): int
@@ -29,7 +23,7 @@ class MySQLJob extends Job implements JobInterface
         return $this->job;
     }
 
-    public function getRawBody(): string
+    public function getRawBody(): string|null
     {
         return $this->job['data'];
     }
