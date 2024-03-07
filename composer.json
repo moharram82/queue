@@ -1,0 +1,29 @@
+{
+    "name": "moharram82/queue",
+    "description": "Queue is a PHP package for executing time-consuming tasks in the background.",
+    "type": "library",
+    "keywords": ["moharram82", "php", "queue"],
+    "homepage": "https://github.com/moharram82/queue/",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Mohammed Moharram",
+            "homepage": "https://moharram82.github.io/",
+            "email": "moharram82@hotmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Moharram82\\Queue\\": "src/",
+            "Example\\": "example/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
